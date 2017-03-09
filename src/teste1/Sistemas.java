@@ -3,6 +3,7 @@ import robocode.*;
 import java.awt.Color;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
+import robocode.util.Utils;
 
 // API help : http://robocode.sourceforge.net/docs/robocode/robocode/Robot.html
 
@@ -24,6 +25,7 @@ public class Sistemas extends AdvancedRobot{
     public int timesHitOpponent = 0;
     public int timesMissedOpponent = 0;
     public int timesHitByOpponent = 0;
+    public double walk;
     
     public void run() {
       // Initialization of the robot should be put here
@@ -40,16 +42,31 @@ public class Sistemas extends AdvancedRobot{
         setColors(Color.blue,Color.blue,Color.blue); // body,gun,radar
         setScanColor(Color.green);
         setAdjustRadarForRobotTurn(true);
-
+        
+        double x = 20;
+        double y = 20;
+        
+        moveTo(x, y);
+        
+        if (getX() > (x - 5) && getX() < (x + 5) && getY() > (y - 5) && getY() < (y + 5))
+            turnRadarRight(360);
+        
         // Robot main loop
         while(true) {
-            ahead(100);
-            turnGunRight(360);
-            back(100);
-            turnGunLeft(360);
-            turnRadarRight(360);             
-            scan();
+            
         }
+    }
+    
+    
+    /**
+     * moveTo: Moves Robot to position of coordinates (destX, destY)
+     */
+    private void moveTo(double destX, double destY) {
+        double centerAngle = Math.atan2(destX-getX(), destY-getY());
+        turnRightRadians(Utils.normalRelativeAngle(centerAngle - getHeadingRadians()));
+        double deltaX = destX - getX();
+        double deltaY = destY - getY();
+        ahead(Math.hypot(deltaX, deltaY));
     }
 
     /**
