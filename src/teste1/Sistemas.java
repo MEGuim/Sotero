@@ -1,8 +1,6 @@
-package teste1;
+package sistemasintelige;
 import robocode.*;
 import java.awt.Color;
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
 import robocode.util.Utils;
 
 // API help : http://robocode.sourceforge.net/docs/robocode/robocode/Robot.html
@@ -16,10 +14,14 @@ public class Sistemas extends AdvancedRobot{
     /**
      * run: Teste1's default behavior
      */
+	private DistanceThread counter;
+	 
     public int cont =0;
     public double xAnt;
     public double yAnt;
     public double dist = 0;
+	public double distance = 0;
+	public static double total = 0;
     public static double fim = 0;
     public int timesHitWall = 0;
     public int timesHitOpponent = 0;
@@ -29,15 +31,9 @@ public class Sistemas extends AdvancedRobot{
     
     public void run() {
       // Initialization of the robot should be put here
-        xAnt = getX();
-        yAnt = getY();
-        
-        
-        addCustomEvent(new Condition("TurnStartedEvent", 99){
-            public boolean test() {
-                return true;
-            }
-        });
+	 	this.counter = new DistanceThread(this);
+	   
+      
         
         setColors(Color.blue,Color.blue,Color.blue); // body,gun,radar
         setScanColor(Color.green);
@@ -45,15 +41,17 @@ public class Sistemas extends AdvancedRobot{
         
         double x = 20;
         double y = 20;
-        
         moveTo(x, y);
-        
-        if (getX() > (x - 5) && getX() < (x + 5) && getY() > (y - 5) && getY() < (y + 5))
+		
+		
+        if (getX() > (x - 5) && getX() < (x + 5) && getY() > (y - 5) && getY() < (y + 5)){
             turnRadarRight(360);
+			this.counter.start();
+			}
         
         // Robot main loop
-        while(true) {
-            
+        while(true) {             
+            scan();
         }
     }
     
@@ -121,30 +119,22 @@ public class Sistemas extends AdvancedRobot{
         timesMissedOpponent++;
     }
     
-    public void onCustomEvent(CustomEvent e) {
-        if (e.getCondition().getName().equals("TurnStartedEvent")) {
-            double delta = sqrt(pow(getX()-xAnt,2) + pow(getY()-yAnt,2));
-            dist += delta;
-            xAnt = getX();
-            yAnt = getY();
-            fim += delta;
-        
-        }
-    }
 	
     public void onRoundEnded(RoundEndedEvent e){
-        System.out.println("---------END OF ROUND---------");
+       	double distance = counter.getDistance();
+		total += distance;
+		System.out.println("---------END OF ROUND---------");
         System.out.println("Distance: " +dist);
         System.out.println("Walls hit: " +timesHitWall);
         System.out.println("Hits: " +timesHitOpponent);
         System.out.println("Misses: " +timesMissedOpponent);
         System.out.println("Hit by Enemy Bullets: " +timesHitByOpponent);
-        System.out.println("Total distance: " +fim);		
+       	System.out.println("Distance: " + distance + " pixels");
+       	counter.kill();		
     }
 	
     public void onDeath(DeathEvent e){
         System.out.println("--------I DIED--------");
-        System.out.println("Distance: " +dist);
         System.out.println("Walls hit: " +timesHitWall);
         System.out.println("Hits: " +timesHitOpponent);
         System.out.println("Misses: " +timesMissedOpponent);
@@ -154,7 +144,7 @@ public class Sistemas extends AdvancedRobot{
 	
     public void onBattleEnded(BattleEndedEvent e){
         System.out.println("--------END OF BATTLE---------");
-        System.out.println("Total Distance: " +fim);
+        System.out.println("Total Distance: " +total);
     }
 
 }
