@@ -39,6 +39,7 @@ public class Oliver extends AdvancedRobot {
     public boolean scan = false;
     public boolean robo12Stuck = false;
     public boolean robo23Stuck = false;
+    public boolean chegamos = false;
     
 
     public void run() {
@@ -64,9 +65,13 @@ public class Oliver extends AdvancedRobot {
                 ahead(evasionDistance * 1.35);
             }
         }
+        sleep(100);
+        chegamos = true;
+        
         while (scan == false) {
             turnRadarRight(360);
         }
+        
         System.out.println(alvos.get(0).toString());
         System.out.println(alvos.get(1).toString());
         System.out.println(alvos.get(2).toString());
@@ -111,6 +116,24 @@ public class Oliver extends AdvancedRobot {
             moveTo(destX3 + margem, destY3 - margem);
             
             moveTo(x, y);
+            
+            distance = counter.getDistance();
+            counter.kill();
+            total += distance;
+            realDistanceTotal += realDistance;
+            System.out.println("--------I GOT HOME--------");
+            System.out.println("Walls hit: " + timesHitWall);
+            System.out.println("Hits: " + timesHitOpponent);
+            System.out.println("Misses: " + timesMissedOpponent);
+            System.out.println("Hit by Enemy Bullets: " + timesHitByOpponent);
+            System.out.println("Distance: " + distance);
+            System.out.println("Real Distance: " + realDistance);
+            System.out.println("Ratio: " + distance / realDistance);
+            System.out.println("Total distance: " + total);
+            System.out.println("Total Real Distance: " + realDistanceTotal);
+            System.out.println("Total Ratio: " + total / realDistanceTotal);
+            
+            
             end = true;
         }
     }
@@ -176,23 +199,6 @@ public class Oliver extends AdvancedRobot {
     }
             
     public void ordena() {
-        int n = 0;
-        while (alvos.get(0).equals(alvos.get(1)) || alvos.get(0).equals(alvos.get(2)) || alvos.get(2).equals(alvos.get(1))) {
-            System.out.println("Entrei no while");
-            alvos.clear();
-            if (n % 2 == 0) {
-                moveTo(20, 600);
-            } else {
-                moveTo(600, 20);
-            }
-            turnRadarRight(360);
-            moveTo(20, 20);
-            n++;
-            System.out.println(alvos.get(0).toString());
-            System.out.println(alvos.get(1).toString());
-            System.out.println(alvos.get(2).toString());
-
-        }
         Collections.sort(alvos, new PointCompare());
 
         if (alvos.get(1).getY() < alvos.get(2).getY()) {
@@ -208,7 +214,7 @@ public class Oliver extends AdvancedRobot {
      * onScannedRobot: What to do when you see another robot
      */
     public void onScannedRobot(ScannedRobotEvent e) {
-        if (e.getVelocity() == 0) {
+        if (e.getVelocity() == 0 && chegamos == true) {
             double angleToEnemy = e.getBearing();
 
             // Calculate the angle to the scanned robot
@@ -233,6 +239,13 @@ public class Oliver extends AdvancedRobot {
             scan = false;
         }
     }
+    
+    public void sleep(int x){
+       while(x != 0){
+           doNothing();
+           x--;
+       }
+  }
 
     public void onBulletHit(BulletHitEvent e) {
         turnGunRight(720);
@@ -242,37 +255,4 @@ public class Oliver extends AdvancedRobot {
     public void onBulletHit(BulletMissedEvent e) {
         timesMissedOpponent++;
     }
-
-    public void onRoundEnded(RoundEndedEvent e) {
-        double distance = counter.getDistance();
-        System.out.println("---------END OF ROUND---------");
-        System.out.println("Distancia Real: " + realDistance);
-        System.out.println("Distance: " + distance + " pixels");
-        counter.kill();
-    }
-
-    public void onDeath(DeathEvent e) {
-        double distance = counter.getDistance();
-        total += distance;
-        realDistanceTotal += realDistance;
-        System.out.println("--------I DIED--------");
-        System.out.println("Walls hit: " + timesHitWall);
-        System.out.println("Hits: " + timesHitOpponent);
-        System.out.println("Misses: " + timesMissedOpponent);
-        System.out.println("Hit by Enemy Bullets: " + timesHitByOpponent);
-        System.out.println("Distance: " + distance);
-        System.out.println("Real Distance: " + realDistance);
-        System.out.println("Ratio: " + distance / realDistance);
-        System.out.println("Total distance: " + total);
-        System.out.println("Total Real Distance: " + realDistanceTotal);
-        System.out.println("Total Ratio: " + total / realDistanceTotal);
-    }
-
-    public void onBattleEnded(BattleEndedEvent e) {
-        System.out.println("--------END OF BATTLE---------");
-        System.out.println("Total Distance: " + total);
-        System.out.println("Total Real Distance: " + realDistanceTotal);
-        System.out.println("Ratio: " + total / realDistanceTotal);
-    }
-
 }
