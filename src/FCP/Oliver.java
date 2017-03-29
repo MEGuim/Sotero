@@ -40,11 +40,9 @@ public class Oliver extends AdvancedRobot {
     public boolean robo12Stuck = false;
     public boolean robo23Stuck = false;
     public boolean chegamos = false;
-    
 
     public void run() {
         // Initialization of the robot should be put here
-
         alvos = new ArrayList<Point>();
         botSize = Math.hypot(getHeight(), getWidth());
         evasionDistance = Math.hypot(getHeight(), getWidth()) * 1.25;
@@ -55,6 +53,7 @@ public class Oliver extends AdvancedRobot {
 
         double x = 20;
         double y = 20;
+
         while (origin == false) {
             moveTo(x, y);
             if (getX() < 30 && getY() < 30) {
@@ -67,11 +66,11 @@ public class Oliver extends AdvancedRobot {
         }
         sleep(100);
         chegamos = true;
-        
+
         while (scan == false) {
             turnRadarRight(360);
         }
-        
+
         System.out.println(alvos.get(0).toString());
         System.out.println(alvos.get(1).toString());
         System.out.println(alvos.get(2).toString());
@@ -80,7 +79,7 @@ public class Oliver extends AdvancedRobot {
         System.out.println(alvos.get(0).toString());
         System.out.println(alvos.get(1).toString());
         System.out.println(alvos.get(2).toString());
-        
+
         calculateRealDistance();
 
         this.counter = new DistanceThread(this);
@@ -97,26 +96,27 @@ public class Oliver extends AdvancedRobot {
             double destY2 = p2.getY();
             double destX3 = p3.getX();
             double destY3 = p3.getY();
-            
-            
+
             moveTo(destX - margem, destY + margem);
-        
-            if (destY2 < destY) 
+
+            if (destY2 < destY) {
                 moveTo(destX + margem, destY + margem);
-            else 
+            } else {
                 moveTo(destX2 - margem, destY2 + margem);
-            
+            }
+
             moveTo(destX2 + margem, destY2 + margem);
-            
-            if (destX3 < destX2) 
+
+            if (destX3 < destX2) {
                 moveTo(destX2 + margem, destY2 - margem);
-            else
+            } else {
                 moveTo(destX3 + margem, destY3 + margem);
-            
+            }
+
             moveTo(destX3 + margem, destY3 - margem);
-            
+
             moveTo(x, y);
-            
+
             distance = counter.getDistance();
             counter.kill();
             total += distance;
@@ -132,8 +132,7 @@ public class Oliver extends AdvancedRobot {
             System.out.println("Total distance: " + total);
             System.out.println("Total Real Distance: " + realDistanceTotal);
             System.out.println("Total Ratio: " + total / realDistanceTotal);
-            
-            
+
             end = true;
         }
     }
@@ -149,12 +148,12 @@ public class Oliver extends AdvancedRobot {
         double deltaY = destY - getY();
         ahead(Math.hypot(deltaX, deltaY));
     }
-    
+
     public void calculateRealDistance() {
         Point r1 = alvos.get(0);
         Point r2 = alvos.get(1);
         Point r3 = alvos.get(2);
-        
+
         double destX1 = r1.getX();
         double destY1 = r1.getY();
         double destX2 = r2.getX();
@@ -165,39 +164,18 @@ public class Oliver extends AdvancedRobot {
         double deltaY;
         double d12;
         double d23;
-        
+
         deltaX = destX2 - destX1;
         deltaY = destY2 - destY1;
         d12 = Math.hypot(deltaX, deltaY);
-        if (d12 < 50)
-            robo12Stuck = true;
-        
+
         deltaX = destX3 - destX2;
         deltaY = destY3 - destY2;
         d23 = Math.hypot(deltaX, deltaY);
-        if (d23 < 50)
-            robo23Stuck = true;
-        
+
         realDistance = Math.hypot(destX1 - 20, destY1 - 20) + Math.hypot(destX3 - 20, destY3 - 20) + d12 + d23;
     }
 
-    
-    public double distanceBetween(int frst, int scnd) {
-        Point r1 = alvos.get(frst - 1);
-        Point r2 = alvos.get(scnd - 1);
-        
-        double destX1 = r1.getX();
-        double destY1 = r1.getY();
-        double destX2 = r2.getX();
-        double destY2 = r2.getY();
-        
-        double deltaX = destX2 - destX1;
-        double deltaY = destY2 - destY1;
-        double ret = Math.hypot(deltaX, deltaY);
-        
-        return ret;
-    }
-            
     public void ordena() {
         Collections.sort(alvos, new PointCompare());
 
@@ -239,13 +217,13 @@ public class Oliver extends AdvancedRobot {
             scan = false;
         }
     }
-    
-    public void sleep(int x){
-       while(x != 0){
-           doNothing();
-           x--;
-       }
-  }
+
+    public void sleep(int x) {
+        while (x != 0) {
+            doNothing();
+            x--;
+        }
+    }
 
     public void onBulletHit(BulletHitEvent e) {
         turnGunRight(720);
