@@ -4,6 +4,7 @@ import robocode.Robot;
 import java.awt.geom.Point2D;
 
 /**
+ * 
  ** DistanceThread - Thread that calculates distance (in pixels) made by a designated robot during its life time
  * 
  ** IMPORTANT: 
