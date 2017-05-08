@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://robocode.sourceforge.net/license/epl-v10.html
  */
-package FCP;
+package V2;
 
 import robocode.AdvancedRobot;
 import robocode.RobocodeFileOutputStream;

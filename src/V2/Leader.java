@@ -1,4 +1,4 @@
-package FCP;
+package V2;
 
 import robocode.*;
 import java.awt.geom.Point2D;

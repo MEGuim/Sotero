@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package FCP;
+package V2;
 
 import robocode.*;
 import java.awt.geom.Point2D;
