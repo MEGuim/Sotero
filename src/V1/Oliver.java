@@ -1,4 +1,4 @@
-package OMaior;
+package V1;
 
 import robocode.*;
 import java.awt.Color;
