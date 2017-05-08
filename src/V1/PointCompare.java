@@ -1,4 +1,4 @@
-package OMaior;
+package V1;
 
 import java.awt.Point;
 import java.util.Comparator;

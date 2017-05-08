@@ -1,4 +1,4 @@
-package OMaior;
+package V1;
 
 import robocode.Robot;
 import java.awt.geom.Point2D;
