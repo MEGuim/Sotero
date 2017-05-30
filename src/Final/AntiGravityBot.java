@@ -17,7 +17,9 @@ public class AntiGravityBot extends TeamRobot {
     /**
      * run: SnippetBot's default behavior
      */
+    Enemy target;					//our current enemy
     Hashtable targets;				//all enemies are stored in the hashtable
+    double firePower;				//the power of the shot we will be using
     final double PI = Math.PI;		//just a constant
     int direction = 1;				//direction we are heading... 1 = forward, -1 = backwards
     double midpointstrength = 0;	//The strength of the gravity point in the middle of the field
@@ -106,12 +108,7 @@ public class AntiGravityBot extends TeamRobot {
         return dir;
     }
 
-    /**
-     * keep the scanner turning*
-     */
-    void doScanner() {
-        setTurnRadarLeftRadians(2 * PI);
-    }
+    
 
     //if a bearing is not within the -pi to pi range, alters it to provide the shortest angle
     double normaliseBearing(double ang) {
@@ -167,6 +164,24 @@ public class AntiGravityBot extends TeamRobot {
         Enemy en = (Enemy) targets.get(e.getName());
         en.live = false;
     }
+    
+    
+    void doFirePower() {
+		firePower = 400/target.distance;//selects a bullet power based on our distance away from the target
+		if (firePower > 3) {
+			firePower = 3;
+		}
+	}
+    
+    /**Move the gun to the predicted next bearing of the enemy**/
+	void doGun() {
+		long time = getTime() + (int)Math.round((getRange(getX(),getY(),target.x,target.y)/(20-(3*firePower))));
+		Point2D.Double p = target.guessPosition(time);
+		
+		//offsets the gun by the angle to the next shot based on linear targeting provided by the enemy class
+		double gunOffset = getGunHeadingRadians() - (Math.PI/2 - Math.atan2(p.y - getY(), p.x - getX()));
+		setTurnGunLeftRadians(normaliseBearing(gunOffset));
+	}
 }
 
 class Enemy {
