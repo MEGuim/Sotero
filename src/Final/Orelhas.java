@@ -25,6 +25,10 @@ public class Orelhas extends AntiGravityBot implements Droid {
                 if (counter > 10) {
                     hasMaster = false;
                     antiGravMoveNoEnemies();
+                    doFirePower();
+                    
+                    out.println(target.distance);
+                    fire(firePower);
                 }
                 else {
                     counter++;
