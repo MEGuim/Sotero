@@ -17,7 +17,7 @@ public class AntiGravityBot extends TeamRobot {
     /**
      * run: SnippetBot's default behavior
      */
-    Enemy target;					//our current enemy
+    Inimigo target;					//our current enemy
     Hashtable targets;				//all enemies are stored in the hashtable
     double firePower;				//the power of the shot we will be using
     final double PI = Math.PI;		//just a constant
@@ -31,11 +31,11 @@ public class AntiGravityBot extends TeamRobot {
         double force;
         double ang;
         GravPoint p;
-        Enemy en;
+        Inimigo en;
         Enumeration e = targets.elements();
         //cycle through all the enemies.  If they are alive, they are repulsive.  Calculate the force on us
         while (e.hasMoreElements()) {
-            en = (Enemy) e.nextElement();
+            en = (Inimigo) e.nextElement();
             if (en.live) {
                 p = new GravPoint(en.x, en.y, -1000);
                 force = p.power / Math.pow(getRange(getX(), getY(), p.x, p.y), 2);
@@ -76,6 +76,44 @@ public class AntiGravityBot extends TeamRobot {
         //Move in the direction of our resolved force.
         goTo(getX() - xforce, getY() - yforce);
     }
+    
+    void antiGravMoveNoEnemies() {
+        double xforce = 0;
+        double yforce = 0;
+        double force;
+        double ang;
+        GravPoint p;
+        
+        /**
+         * The next section adds a middle point with a random (positive or
+         * negative) strength. The strength changes every 5 turns, and goes
+         * between -1000 and 1000. This gives a better overall movement.*
+         */
+        midpointcount++;
+        if (midpointcount > 5) {
+            midpointcount = 0;
+            midpointstrength = (Math.random() * 2000) - 1000;
+        }
+        p = new GravPoint(getBattleFieldWidth() / 2, getBattleFieldHeight() / 2, midpointstrength);
+        force = p.power / Math.pow(getRange(getX(), getY(), p.x, p.y), 1.5);
+        ang = normaliseBearing(Math.PI / 2 - Math.atan2(getY() - p.y, getX() - p.x));
+        xforce += Math.sin(ang) * force;
+        yforce += Math.cos(ang) * force;
+
+        /**
+         * The following four lines add wall avoidance. They will only affect us
+         * if the bot is close to the walls due to the force from the walls
+         * decreasing at a power 3.*
+         */
+        xforce += 5000 / Math.pow(getRange(getX(), getY(), getBattleFieldWidth(), getY()), 3);
+        xforce -= 5000 / Math.pow(getRange(getX(), getY(), 0, getY()), 3);
+        yforce += 5000 / Math.pow(getRange(getX(), getY(), getX(), getBattleFieldHeight()), 3);
+        yforce -= 5000 / Math.pow(getRange(getX(), getY(), getX(), 0), 3);
+
+        //Move in the direction of our resolved force.
+        goTo(getX() - xforce, getY() - yforce);
+    }
+    
 
     /**
      * Move towards an x and y coordinate*
@@ -161,7 +199,7 @@ public class AntiGravityBot extends TeamRobot {
     }
 
     public void onRobotDeath(RobotDeathEvent e) {
-        Enemy en = (Enemy) targets.get(e.getName());
+        Inimigo en = (Inimigo) targets.get(e.getName());
         en.live = false;
     }
     
@@ -184,36 +222,3 @@ public class AntiGravityBot extends TeamRobot {
 	}
 }
 
-class Enemy {
-
-    /*
-	 * ok, we should really be using accessors and mutators here,
-	 * (i.e getName() and setName()) but life's too short.
-     */
-    String name;
-    public double bearing, heading, speed, x, y, distance, changehead;
-    public long ctime; 		//game time that the scan was produced
-    public boolean live; 	//is the enemy alive?
-
-    public Point2D.Double guessPosition(long when) {
-        double diff = when - ctime;
-        double newY = y + Math.cos(heading) * speed * diff;
-        double newX = x + Math.sin(heading) * speed * diff;
-
-        return new Point2D.Double(newX, newY);
-    }
-}
-
-/**
- * Holds the x, y, and strength info of a gravity point*
- */
-class GravPoint {
-
-    public double x, y, power;
-
-    public GravPoint(double pX, double pY, double pPower) {
-        x = pX;
-        y = pY;
-        power = pPower;
-    }
-}
