@@ -38,7 +38,13 @@ public class MacacoLider extends SuperDragao{
             setemotion();
             
             switch(emotion){
-                case 1:
+                case 1: antiGravMoveNoEnemies();	
+			doFirePower();
+			doScanner();
+			doGun();
+			out.println(target.distance);	//move the gun to predict where the enemy will be
+			fire(firePower);
+			execute();
                 
             }
                     
