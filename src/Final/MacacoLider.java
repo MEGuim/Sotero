@@ -6,10 +6,12 @@
 package Final;
 
 import java.awt.geom.Point2D;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import static jdk.nashorn.internal.objects.NativeError.printStackTrace;
 import robocode.*;
 import robocode.util.Utils;
 
@@ -19,70 +21,86 @@ import robocode.util.Utils;
  */
 public class MacacoLider extends SuperDragao {
 
-    private Map<String, Inimigo> inimigos;
-    private final HashMap<String, Point2D> teammates = new HashMap<>();
+    private HashMap<String, Point2D> teammates = new HashMap<>();
     private RobotStatus currentStatus;
     private boolean pleasure, arousal, dominance;
     private int btaken, topbtaken, bhit;
     private int emotion; // 1-Pride 2-Joy 3-Hope 4-Hate 5-Fear
     String fdp;
 
-    public void run() {
-
-        while (true) {
+    
+    
+    public void run(){
+        
+        doScanner();
+        
+        while(true){
+            
 
             checkdominance();
             checkpleasure();
             checkarousal();
             setemotion();
 
-            switch (emotion) {
-                case 1:
-                    antiGravMoveNoEnemies();
-                    doFirePower();
-                    doScanner();
-                    doGun();
-                    fire(firePower);
-                    execute();
-
-                case 2:
-                    antiGravMove();
-                    doFirePower();
-                    doScanner();
-                    doGun();
-                    fire(firePower);
-                    execute();
-
-                case 3:
-                    antiGravMove();
-                    doFirePower();
-                    doScanner();
-                    doGun();
-                    fire(firePower * 2);
-                    execute();
-
-                case 4:
-                    target = inimigos.get(fdp);
-                    goTo(target.x, target.y);
-                    doFirePower();
-                    doScanner();
-                    doGun();
-                    fire(firePower);
-                    execute();
-
-            }
+            
+            switch(emotion){
+                case 1: antiGravMoveNoEnemies();	
+			doFirePower();
+			doScanner();
+			doGun();
+			fire(firePower);
+			execute();
+                        
+                case 2: antiGravMove();
+                        doFirePower();
+			doScanner();
+			doGun();
+			fire(firePower);
+			execute();
+                
+                case 3: antiGravMove();
+                        doFirePower();
+			doScanner();
+			doGun();
+			fire(firePower * 2);
+			execute();
+                        
+                case 4: target = inimigos.get(fdp);
+                        goTo(target.x,target.y);
+                        doFirePower();
+			doScanner();
+			doGun();
+			fire(firePower);
+			execute();
+                
+                case 5: 
+                    
+            }   
+            
 
         }
 
     }
 
-    public void checkdominance() {
-
-        if (inimigos.size() > teammates.size()) {
-            dominance = false;
-        } else {
-            dominance = true;
+    
+    public void report(){
+        try{
+        for(String key : inimigos.keySet()){
+            broadcastMessage(inimigos.get(key));
         }
+        }
+        catch(IOException e){
+            printStackTrace(e);
+        }
+        
+    }
+    
+    public void checkdominance(){
+        
+        if(inimigos.size() > teammates.size())
+                dominance=false;
+            else dominance=true;
+        
 
     }
 
@@ -140,6 +158,18 @@ public class MacacoLider extends SuperDragao {
     public void onBulletHit(BulletHitEvent e) {
         bhit++;
     }
+
+    
+    public void onRobotDeath(RobotDeathEvent e){
+        
+        if (isTeammate(e.getName())) {
+                teammates.remove(e.getName());
+            } else{
+            inimigos.remove(e.getName());
+        }
+        
+    }
+    
 
     public void onScannedRobot(ScannedRobotEvent e) {
 

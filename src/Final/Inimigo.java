@@ -6,9 +6,10 @@
 package Final;
 
 import java.awt.geom.Point2D;
+import java.io.Serializable;
 
 
-public class Inimigo {
+public class Inimigo implements Serializable {
 
     public Inimigo(double x, double y, double bearing, double heading, double speed) {
         this.bearing = bearing;
