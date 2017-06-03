@@ -205,5 +205,4 @@ public class MacacoLider extends SuperDragao {
             goTo(corners.get(i).getX(), corners.get(i).getY());
         }
     }
-
 }
