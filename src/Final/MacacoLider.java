@@ -7,6 +7,7 @@ package Final;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import robocode.*;
@@ -126,7 +127,7 @@ public class MacacoLider extends SuperDragao{
         int x = inimigos.get(e.getName()).getBhit();
         if(x > topbtaken){
             topbtaken=x;
-            fdp = inimigos.get(e.getName()).getName();
+            fdp = e.getName();
         }
     }
     
@@ -169,7 +170,34 @@ public class MacacoLider extends SuperDragao{
         return new Point2D.Double(targetX, targetY); 
     }
     
-    
-    
+    public void goToEmptiestCorner() {
+        ArrayList<Point2D> corners = new ArrayList<>();
+        ArrayList<Integer> quadrant = new ArrayList<>();
+        double bufferDistance = 18;
+        corners.add(new Point2D.Double(bufferDistance, bufferDistance));
+        corners.add(new Point2D.Double(getBattleFieldHeight() - bufferDistance, bufferDistance));
+        corners.add(new Point2D.Double(bufferDistance, (getBattleFieldWidth()) -  bufferDistance));
+        corners.add(new Point2D.Double((getBattleFieldHeight() - bufferDistance), (getBattleFieldWidth()) - bufferDistance));
+        
+        Inimigo inimigo;
+        for (String key : inimigos.keySet()) {
+}           inimigo = inimigos.get(key);
+            if (inimigo.getX() < getBattleFieldHeight() / 2) {
+                if (inimigo.getY() < getBattleFieldWidth() / 2) {
+                    quadrant.add(0, quadrant.get(0) + 1);
+                } else {
+                    quadrant.add(1, quadrant.get(1) + 1);
+                }
+            } else {
+                if (inimigo.getY() < getBattleFieldWidth() / 2) {
+                    quadrant.add(2, quadrant.get(2) + 1);
+                } else {
+                    quadrant.add(3, quadrant.get(3) + 1);
+                }
+            }
+        
+        int i = Collections.min(quadrant);
+        goTo(corners.get(i).getX(), corners.get(i).getY());
+    }
 }
 
