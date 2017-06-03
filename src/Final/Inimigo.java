@@ -3,66 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package V2;
+package Final;
+
+import java.awt.geom.Point2D;
 
 
-/**
- *
- * @author goncalo
- */
-public class Inimigo{
-    
-    private double x;
-    private double y;
-    private double bearing;
-    private double heading;
-    private double energy;
+public class Inimigo {
 
-    public Inimigo(double x, double y, double bearing, double heading, double energy) {
-        this.x = x;
-        this.y = y;
-        this.bearing = bearing;
-        this.heading = heading;
-        this.energy = energy;
+    String name;
+    public double bearing, heading, speed, x, y, distance, changehead;
+    public long ctime; 		//game time that the scan was produced
+    public boolean live; 	//is the enemy alive?
+
+    public Point2D.Double guessPosition(long when) {
+        double diff = when - ctime;
+        double newY = y + Math.cos(heading) * speed * diff;
+        double newX = x + Math.sin(heading) * speed * diff;
+
+        return new Point2D.Double(newX, newY);
     }
-
-    public double getX() {
-        return x;
-    }
-
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public void setY(double y) {
-        this.y = y;
-    }
-
-    public double getBearing() {
-        return bearing;
-    }
-
-    public void setBearing(double bearing) {
-        this.bearing = bearing;
-    }
-
-    public double getHeading() {
-        return heading;
-    }
-
-    public void setHeading(double heading) {
-        this.heading = heading;
-    }
-
-    public double getEnergy() {
-        return energy;
-    }
-
-    public void setEnergy(int energy) {
-        this.energy = energy;
-    }    
 }
