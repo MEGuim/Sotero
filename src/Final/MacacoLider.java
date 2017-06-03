@@ -6,10 +6,12 @@
 package Final;
 
 import java.awt.geom.Point2D;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import static jdk.nashorn.internal.objects.NativeError.printStackTrace;
 import robocode.*;
 import robocode.util.Utils;
 
@@ -19,7 +21,6 @@ import robocode.util.Utils;
  */
 public class MacacoLider extends SuperDragao {
 
-    private Map<String, Inimigo> inimigos;
     private HashMap<String, Point2D> teammates = new HashMap<>();
     private RobotStatus currentStatus;
     private boolean pleasure, arousal, dominance;
@@ -83,8 +84,14 @@ public class MacacoLider extends SuperDragao {
 
     
     public void report(){
-        
-        inimigos.forEach();
+        try{
+        for(String key : inimigos.keySet()){
+            broadcastMessage(inimigos.get(key));
+        }
+        }
+        catch(IOException e){
+            printStackTrace(e);
+        }
         
     }
     
