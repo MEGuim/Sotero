@@ -12,9 +12,7 @@ import robocode.TeamRobot;
  * @author CFCanelas
  */
 public class SuperDragao extends AntiGravityBot {
-    
-    
-	Enemy target;					//our current enemy
+				//our current enemy
     
     double firePower;				//the power of the shot we will be using
 

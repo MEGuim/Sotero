@@ -30,6 +30,8 @@ public class MacacoLider extends SuperDragao{
     
     public void run(){
         
+        doScanner();
+        
         while(true){
             
             checkdominance();
@@ -66,7 +68,9 @@ public class MacacoLider extends SuperDragao{
 			doGun();
 			fire(firePower);
 			execute();
-                        
+                
+                case 5: 
+                    
             }   
             
                     
@@ -75,6 +79,11 @@ public class MacacoLider extends SuperDragao{
     
     }
     
+    public void report(){
+        
+        inimigos.forEach(broadcastMessage());
+        
+    }
     
     public void checkdominance(){
         
@@ -132,6 +141,16 @@ public class MacacoLider extends SuperDragao{
     
     public void onBulletHit(BulletHitEvent e){
         bhit++;
+    }
+    
+    public void onRobotDeath(RobotDeathEvent e){
+        
+        if (isTeammate(e.getName())) {
+                teammates.remove(e.getName());
+            } else{
+            inimigos.remove(e.getName());
+        }
+        
     }
     
     
