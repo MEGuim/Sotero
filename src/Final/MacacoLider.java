@@ -42,11 +42,33 @@ public class MacacoLider extends SuperDragao{
 			doFirePower();
 			doScanner();
 			doGun();
-			out.println(target.distance);	//move the gun to predict where the enemy will be
+			fire(firePower);
+			execute();
+                        
+                case 2: antiGravMove();
+                        doFirePower();
+			doScanner();
+			doGun();
 			fire(firePower);
 			execute();
                 
-            }
+                case 3: antiGravMove();
+                        doFirePower();
+			doScanner();
+			doGun();
+			fire(firePower * 2);
+			execute();
+                        
+                case 4: target = inimigos.get(fdp);
+                        goTo(target.x,target.y);
+                        doFirePower();
+			doScanner();
+			doGun();
+			fire(firePower);
+			execute();
+                        
+            }   
+            
                     
         }
     
