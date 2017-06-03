@@ -131,8 +131,8 @@ public class MacacoLider extends SuperDragao {
         btaken++;
         inimigos.get(e.getName()).bhit();
         int x = inimigos.get(e.getName()).getBhit();
-        if(x > topbtaken){
-            topbtaken=x;
+        if (x > topbtaken) {
+            topbtaken = x;
             fdp = e.getName();
         }
     }
@@ -205,4 +205,5 @@ public class MacacoLider extends SuperDragao {
             goTo(corners.get(i).getX(), corners.get(i).getY());
         }
     }
+
 }
