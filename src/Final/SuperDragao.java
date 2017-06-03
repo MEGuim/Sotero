@@ -38,6 +38,13 @@ public class SuperDragao extends AntiGravityBot {
 		}
 	}
     
+    /**
+     * keep the scanner turning*
+     */
+    void doScanner() {
+        setTurnRadarLeftRadians(2 * PI);
+    }
+    
     void doFirePower() {
 		firePower = 400/target.distance;//selects a bullet power based on our distance away from the target
 		if (firePower > 3) {
