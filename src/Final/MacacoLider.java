@@ -5,6 +5,7 @@
  */
 package Final;
 
+import static java.awt.Color.*;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,28 +45,32 @@ public class MacacoLider extends SuperDragao {
 
             
             switch(emotion){
-                case 1: antiGravMoveNoEnemies();	
+                case 1: setAllColors(BLUE);
+                        antiGravMoveNoEnemies();	
 			doFirePower();
 			doScanner();
 			doGun();
 			fire(firePower);
 			execute();
                         
-                case 2: antiGravMove();
+                case 2: setAllColors(BLACK);
+                        antiGravMove();
                         doFirePower();
 			doScanner();
 			doGun();
 			fire(firePower);
 			execute();
                 
-                case 3: antiGravMove();
+                case 3: setAllColors(WHITE);
+                        antiGravMove();
                         doFirePower();
 			doScanner();
 			doGun();
 			fire(firePower * 2);
 			execute();
                         
-                case 4: target = inimigos.get(fdp);
+                case 4: setAllColors(RED);
+                        target = inimigos.get(fdp);
                         goTo(target.x,target.y);
                         doFirePower();
 			doScanner();
@@ -73,7 +78,13 @@ public class MacacoLider extends SuperDragao {
 			fire(firePower);
 			execute();
                 
-                case 5: 
+                case 5: setAllColors(YELLOW);
+                        goToEmptiestCorner();
+                        doFirePower();
+			doScanner();
+			doGun();
+			fire(firePower);
+			execute();
                     
             }   
             

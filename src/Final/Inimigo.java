@@ -11,6 +11,9 @@ import java.io.Serializable;
 
 public class Inimigo implements Serializable {
 
+    public Inimigo() {
+    }
+
     public Inimigo(double x, double y, double bearing, double heading, double speed) {
         this.bearing = bearing;
         this.heading = heading;

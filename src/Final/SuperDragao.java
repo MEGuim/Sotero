@@ -12,16 +12,12 @@ import robocode.TeamRobot;
  * @author CFCanelas
  */
 public class SuperDragao extends AntiGravityBot {
-<<<<<<< HEAD
-				//our current enemy
-=======
->>>>>>> 5c153aec29be4c2c871b72342dbc34ff34963433
-    
+
     double firePower;				//the power of the shot we will be using
 
     public void run() {
-		targets = new Hashtable();
-		target = new Enemy();
+		inimigos = new Hashtable();
+		target = new Inimigo();
 		target.distance = 100000;						//initialise the distance so that we can select a target
 		setColors(Color.red,Color.blue,Color.green);	//sets the colours of the robot
 		//the next two lines mean that the turns of the robot, gun and radar are independant
@@ -67,12 +63,12 @@ public class SuperDragao extends AntiGravityBot {
 	 * onScannedRobot: What to do when you see another robot
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
-		Enemy en;
-		if (targets.containsKey(e.getName())) {
-			en = (Enemy)targets.get(e.getName());
+		Inimigo en;
+		if (inimigos.containsKey(e.getName())) {
+			en = (Inimigo)inimigos.get(e.getName());
 		} else {
-			en = new Enemy();
-			targets.put(e.getName(),en);
+			en = new Inimigo();
+			inimigos.put(e.getName(),en);
 		}
 		//the next line gets the absolute bearing to the point where the bot is
 		double absbearing_rad = (getHeadingRadians()+e.getBearingRadians())%(2*PI);

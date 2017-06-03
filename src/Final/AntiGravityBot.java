@@ -18,7 +18,7 @@ public class AntiGravityBot extends TeamRobot {
      * run: SnippetBot's default behavior
      */
     Inimigo target;					//our current enemy
-    private Map<String, Inimigo> inimigos;
+    public Map<String, Inimigo> inimigos;
     double firePower;				//the power of the shot we will be using
     final double PI = Math.PI;		//just a constant
     int direction = 1;				//direction we are heading... 1 = forward, -1 = backwards
