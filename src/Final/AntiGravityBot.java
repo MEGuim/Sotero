@@ -18,7 +18,7 @@ public class AntiGravityBot extends TeamRobot {
      * run: SnippetBot's default behavior
      */
     Inimigo target;					//our current enemy
-    Hashtable targets;				//all enemies are stored in the hashtable
+    private Map<String, Inimigo> inimigos;
     double firePower;				//the power of the shot we will be using
     final double PI = Math.PI;		//just a constant
     int direction = 1;				//direction we are heading... 1 = forward, -1 = backwards
@@ -32,10 +32,8 @@ public class AntiGravityBot extends TeamRobot {
         double ang;
         GravPoint p;
         Inimigo en;
-        Enumeration e = targets.elements();
-        //cycle through all the enemies.  If they are alive, they are repulsive.  Calculate the force on us
-        while (e.hasMoreElements()) {
-            en = (Inimigo) e.nextElement();
+        for (String key : inimigos.keySet()) {
+            en = inimigos.get(key);
             if (en.live) {
                 p = new GravPoint(en.x, en.y, -1000);
                 force = p.power / Math.pow(getRange(getX(), getY(), p.x, p.y), 2);
@@ -199,7 +197,7 @@ public class AntiGravityBot extends TeamRobot {
     }
 
     public void onRobotDeath(RobotDeathEvent e) {
-        Inimigo en = (Inimigo) targets.get(e.getName());
+        Inimigo en = (Inimigo) inimigos.get(e.getName());
         en.live = false;
     }
     

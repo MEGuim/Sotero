@@ -47,5 +47,7 @@ public class Orelhas extends AntiGravityBot implements Droid {
         target = (Inimigo) e.getMessage();
         hasMaster = true;
         counter = 0;
+        
+        
     }
 }
