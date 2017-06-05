@@ -50,7 +50,7 @@ public class MacacoLider extends SuperDragao {
                         doGun();
                         fire(firePower);
                     }
-
+                    break;
                 case 2:
                     setAllColors(BLACK);
                     antiGravMove();
@@ -58,7 +58,7 @@ public class MacacoLider extends SuperDragao {
                         doGun();
                         fire(firePower);
                     }
-
+                    break;
                 case 3:
                     setAllColors(WHITE);
                     antiGravMove();
@@ -66,7 +66,7 @@ public class MacacoLider extends SuperDragao {
                         doGun();
                         fire(firePower * 2);
                     }
-
+                    break;
                 case 4:
                     setAllColors(RED);
                     if ( !"".equals(fdp) ) {
@@ -75,7 +75,7 @@ public class MacacoLider extends SuperDragao {
                         doGun();
                         fire(firePower);
                     }
-
+                    break;
                 case 5:
                     setAllColors(YELLOW);
                     goToEmptiestCorner();
@@ -83,6 +83,7 @@ public class MacacoLider extends SuperDragao {
                         doGun();
                         fire(firePower);
                     }
+                    break;
             }
             execute();
         }
@@ -101,7 +102,7 @@ public class MacacoLider extends SuperDragao {
 
     public void checkdominance() {
 
-        dominance = inimigos.size() <= teammates.size() + 2;
+        dominance = inimigos.size() <= teammates.size();
 
     }
 

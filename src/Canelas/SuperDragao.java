@@ -229,7 +229,7 @@ public class SuperDragao extends TeamRobot {
                 System.out.println(inimigo);
                 distance = aux;
                 target = inimigo;
-                System.out.println(target);
+                System.out.println("Joelhada neste arbitro: " + target);
                 hasTarget = true;
             }
         }
