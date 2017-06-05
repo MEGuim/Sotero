@@ -123,7 +123,6 @@ public class SuperDragao extends TeamRobot {
     
     public void onHitRobot(HitRobotEvent event){
         back(50);
-        turnRight(90);
         ahead(100);
     }
     
