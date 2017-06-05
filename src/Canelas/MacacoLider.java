@@ -25,13 +25,14 @@ public class MacacoLider extends SuperDragao {
     private boolean pleasure = true, arousal = true, dominance = true;
     private int btaken = 0, topbtaken = 0, bhit = 0;
     private int emotion = 1; // 1-Pride 2-Joy 3-Hope 4-Hate 5-Fear
+    double vidaInicial;
     String fdp = "";
 
     public void run() {
-
+        vidaInicial = getEnergy();
 
         while (true) {
-
+            
             doScanner();
             checkdominance();
             checkpleasure();
@@ -39,7 +40,6 @@ public class MacacoLider extends SuperDragao {
             setemotion();
             selectTarget();
             report();
-            System.out.println(inimigos);
 
             switch (emotion) {
                 case 1:
@@ -113,7 +113,7 @@ public class MacacoLider extends SuperDragao {
     }
 
     public void checkarousal() {
-        arousal = getEnergy() > 100;
+        arousal = getEnergy() > (vidaInicial / 2) ;
     }
 
     public void setemotion() {

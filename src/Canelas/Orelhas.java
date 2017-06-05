@@ -27,7 +27,6 @@ public class Orelhas extends SuperDragao implements Droid {
                 hasMaster = false;
                 antiGravMoveNoEnemies();
                 setTurnGunLeftRadians(normaliseBearing(360));
-                out.println(target.distance);
                 fire(firePower);
             }
             else {
