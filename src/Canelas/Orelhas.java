@@ -5,6 +5,7 @@
  */
 package Canelas;
 
+import static java.awt.Color.*;
 import robocode.Droid;
 import robocode.MessageEvent;
 import robocode.RobotDeathEvent;
@@ -18,7 +19,8 @@ public class Orelhas extends SuperDragao implements Droid {
     public boolean hasMaster = true;
     public int counter = 0;
     
-    public void run () {        
+    public void run () {       
+        setAllColors(GREEN);
         while (true) {
             if (counter > 10) {
                 System.out.println("OPEN LOOOOOOOOP");
