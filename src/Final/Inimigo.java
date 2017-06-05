@@ -121,5 +121,8 @@ public class Inimigo implements Serializable {
         this.live = live;
     }
     
+    public String toString() {
+        return name;
+    }
     
 }
