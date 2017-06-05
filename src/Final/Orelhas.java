@@ -5,9 +5,10 @@
  */
 package Final;
 
-import java.util.Enumeration;
+
 import robocode.Droid;
 import robocode.MessageEvent;
+import robocode.RobotDeathEvent;
 
 /**
  *
@@ -18,6 +19,7 @@ public class Orelhas extends AntiGravityBot implements Droid {
     
     public boolean hasMaster = true;
     public int counter = 0;
+    public boolean hasTarget = false;
     
     public void run () {        
         while (true) {
@@ -25,19 +27,23 @@ public class Orelhas extends AntiGravityBot implements Droid {
                 if (counter > 10) {
                     hasMaster = false;
                     antiGravMoveNoEnemies();
-                    doFirePower();
-                    
-                    out.println(target.distance);
-                    fire(firePower);
+                    if ( hasTarget ) {
+                        doGun();
+                        out.println(target.distance);
+                        fire(firePower);
+                    }
+                    execute();
                 }
                 else {
                     counter++;
                     antiGravMove();					//Move the bot
-                    doFirePower();					//select the fire power to use
-                    doGun();
-                    out.println(target.distance);	//move the gun to predict where the enemy will be
-                    fire(firePower);
-                    execute();						//execute all commands
+                    selectTarget();
+                    if ( hasTarget ) {
+                        doGun();
+                        out.println(target.distance);	//move the gun to predict where the enemy will be
+                        fire(firePower);
+                    }
+                    execute();
                 }
             }
         }
@@ -49,6 +55,13 @@ public class Orelhas extends AntiGravityBot implements Droid {
         counter = 0;
         
         inimigos.put(x.getName(),x);
-        
+    }
+    
+    public void onRobotDeath(RobotDeathEvent e) {
+
+        if (!isTeammate(e.getName())) {
+            inimigos.remove(e.getName());
+        }
+
     }
 }

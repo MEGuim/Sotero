@@ -18,12 +18,13 @@ public class AntiGravityBot extends TeamRobot {
      * run: SnippetBot's default behavior
      */
     Inimigo target;					//our current enemy
-    public Map<String, Inimigo> inimigos;
+    public Map<String, Inimigo> inimigos = new HashMap<String, Inimigo>();
     double firePower;				//the power of the shot we will be using
     final double PI = Math.PI;		//just a constant
     int direction = 1;				//direction we are heading... 1 = forward, -1 = backwards
     double midpointstrength = 0;	//The strength of the gravity point in the middle of the field
-    int midpointcount = 0;			//Number of turns since that strength was changed.
+    int midpointcount = 0;			//Number of turns since that strength was changed
+    boolean hasTarget = false;
 
     void antiGravMove() {
         double xforce = 0;
@@ -122,6 +123,17 @@ public class AntiGravityBot extends TeamRobot {
         double r = turnTo(angle);
         setAhead(dist * r);
     }
+    
+    public void onHitRobot(HitRobotEvent event){
+        back(50);
+        turnRight(90);
+        ahead(100);
+    }
+    
+    public void onHitWall(HitWallEvent event){
+        turnRight(180);
+        ahead(100);
+    }
 
     /**
      * Turns the shortest angle possible to come to a heading, then returns the
@@ -194,23 +206,14 @@ public class AntiGravityBot extends TeamRobot {
             return 2.0 * Math.PI - Math.asin(-xo / h);
         }
         return 0;
-    }
-
-    public void onRobotDeath(RobotDeathEvent e) {
-        Inimigo en = (Inimigo) inimigos.get(e.getName());
-        en.live = false;
-    }
+    }    
     
-    
-    void doFirePower() {
-		firePower = 400/target.distance;//selects a bullet power based on our distance away from the target
+    void doGun() {
+		firePower = 400 / target.distance; //selects a bullet power based on our distance away from the target
 		if (firePower > 3) {
 			firePower = 3;
 		}
-	}
-    
-    /**Move the gun to the predicted next bearing of the enemy**/
-	void doGun() {
+	
 		long time = getTime() + (int)Math.round((getRange(getX(),getY(),target.x,target.y)/(20-(3*firePower))));
 		Point2D.Double p = target.guessPosition(time);
 		
@@ -218,5 +221,19 @@ public class AntiGravityBot extends TeamRobot {
 		double gunOffset = getGunHeadingRadians() - (Math.PI/2 - Math.atan2(p.y - getY(), p.x - getX()));
 		setTurnGunLeftRadians(normaliseBearing(gunOffset));
 	}
+    
+    public void selectTarget() {
+        double distance = 999999999;
+        double currY = getY();
+        double currX = getX();
+        for (String key : inimigos.keySet()) {
+            double aux = getRange(currX, currY, inimigos.get(key).x, inimigos.get(key).y);
+            if (aux < distance)  {
+                distance = aux;
+                target = inimigos.get(key);
+                hasTarget = true;
+            }
+        }
+    }
 }
 

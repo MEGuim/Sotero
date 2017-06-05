@@ -11,10 +11,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 import static jdk.nashorn.internal.objects.NativeError.printStackTrace;
 import robocode.*;
-import robocode.util.Utils;
 
 /**
  *
@@ -29,89 +27,93 @@ public class MacacoLider extends SuperDragao {
     private int emotion; // 1-Pride 2-Joy 3-Hope 4-Hate 5-Fear
     String fdp;
 
-    
-    
-    public void run(){
-        
+    public void run() {
+
         doScanner();
-        
-        while(true){
-            
+
+        while (true) {
 
             checkdominance();
             checkpleasure();
             checkarousal();
             setemotion();
+            doScanner();
+            selectTarget();
 
-            
-            switch(emotion){
-                case 1: setAllColors(BLUE);
-                        antiGravMoveNoEnemies();	
-			doFirePower();
-			doScanner();
-			doGun();
-			fire(firePower);
-			execute();
-                        
-                case 2: setAllColors(BLACK);
-                        antiGravMove();
-                        doFirePower();
-			doScanner();
-			doGun();
-			fire(firePower);
-			execute();
-                
-                case 3: setAllColors(WHITE);
-                        antiGravMove();
-                        doFirePower();
-			doScanner();
-			doGun();
-			fire(firePower * 2);
-			execute();
-                        
-                case 4: setAllColors(RED);
-                        target = inimigos.get(fdp);
-                        goTo(target.x,target.y);
-                        doFirePower();
-			doScanner();
-			doGun();
-			fire(firePower);
-			execute();
-                
-                case 5: setAllColors(YELLOW);
-                        goToEmptiestCorner();
-                        doFirePower();
-			doScanner();
-			doGun();
-			fire(firePower);
-			execute();
+            switch (emotion) {
+                case 1:
+                    setAllColors(BLUE);
+                    report();
+                    antiGravMoveNoEnemies();
                     
-            }   
-            
+                    if ( hasTarget ) {
+                        doGun();
+                        fire(firePower);
+                    }
+
+                case 2:
+                    setAllColors(BLACK);
+                    report();
+                    antiGravMove();
+                    if ( hasTarget ) {
+                        doGun();
+                        fire(firePower);
+                    }
+
+                case 3:
+                    setAllColors(WHITE);
+                    report();
+                    antiGravMove();
+                    if ( hasTarget ) {
+                        doGun();
+                        fire(firePower * 2);
+                    }
+
+                case 4:
+                    setAllColors(RED);
+                    report();
+                    if ( hasTarget ) {
+                        target = inimigos.get(fdp);
+                        goTo(target.x, target.y);
+                        doGun();
+                        fire(firePower);
+                    }
+
+                case 5:
+                    setAllColors(YELLOW);
+                    report();
+                    goToEmptiestCorner();
+                    if ( hasTarget ) {
+                        doGun();
+                        fire(firePower);
+                    }
+                    
+
+            }
+            execute();
 
         }
 
     }
 
-    
-    public void report(){
-        try{
-        for(String key : inimigos.keySet()){
-            broadcastMessage(inimigos.get(key));
-        }
-        }
-        catch(IOException e){
+    public void report() {
+        try {
+            for (String key : inimigos.keySet()) {
+                broadcastMessage(inimigos.get(key));
+            }
+        } catch (IOException e) {
             printStackTrace(e);
         }
-        
+
     }
-    
-    public void checkdominance(){
-        
-        if(inimigos.size() > teammates.size())
-                dominance=false;
-            else dominance=true;
-        
+
+    public void checkdominance() {
+
+        if (inimigos.size() > teammates.size()) {
+            dominance = false;
+        } else {
+            dominance = true;
+        }
 
     }
 
@@ -126,12 +128,7 @@ public class MacacoLider extends SuperDragao {
     }
 
     public void checkarousal() {
-
-        if (currentStatus.getEnergy() > 100) {
-            arousal = true;
-        } else {
-            arousal = false;
-        }
+        arousal = getEnergy() > 100;
     }
 
     public void setemotion() {
@@ -170,17 +167,14 @@ public class MacacoLider extends SuperDragao {
         bhit++;
     }
 
-    
-    public void onRobotDeath(RobotDeathEvent e){
-        
+    public void onRobotDeath(RobotDeathEvent e) {
+
         if (isTeammate(e.getName())) {
-                teammates.remove(e.getName());
-            } else{
+            teammates.remove(e.getName());
+        } else {
             inimigos.remove(e.getName());
         }
-        
     }
-    
 
     public void onScannedRobot(ScannedRobotEvent e) {
 
@@ -194,10 +188,10 @@ public class MacacoLider extends SuperDragao {
             double enemyEnergy = e.getEnergy();
 
             // Calculate the angle to the scanned robot
-            double angle = Math.toRadians((currentStatus.getHeading() + enemyBearing % 360));
+            double angle = Math.toRadians((getHeading() + enemyBearing % 360));
             // Calculate the coordinates of the robot
-            double enemyX = (currentStatus.getX() + Math.sin(angle) * e.getDistance());
-            double enemyY = (currentStatus.getY() + Math.cos(angle) * e.getDistance());
+            double enemyX = (getX() + Math.sin(angle) * e.getDistance());
+            double enemyY = (getY() + Math.cos(angle) * e.getDistance());
 
             Inimigo enemy = new Inimigo(enemyX, enemyY, enemyBearing, enemyHeading, enemyEnergy);
 
@@ -208,10 +202,10 @@ public class MacacoLider extends SuperDragao {
     public Point2D getCoordinates(ScannedRobotEvent e) {
         double angleToTarget = e.getBearing();
         // Calculate the angle to the scanned robot
-        double angle = Math.toRadians((currentStatus.getHeading() + angleToTarget % 360));
+        double angle = Math.toRadians((getHeading() + angleToTarget % 360));
         // Calculate the coordinates of the robot
-        double targetX = (currentStatus.getX() + Math.sin(angle) * e.getDistance());
-        double targetY = (currentStatus.getY() + Math.cos(angle) * e.getDistance());
+        double targetX = (getX() + Math.sin(angle) * e.getDistance());
+        double targetY = (getY() + Math.cos(angle) * e.getDistance());
 
         return new Point2D.Double(targetX, targetY);
     }
