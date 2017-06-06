@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Canelas;
 
 import static java.awt.Color.*;
@@ -45,8 +40,7 @@ public class MacacoLider extends SuperDragao {
                 case 1:
                     setAllColors(BLUE);
                     antiGravMoveNoEnemies();
-                    
-                    if ( hasTarget ) {
+                    if (hasTarget) {
                         doGun();
                         fire(firePower);
                     }
@@ -54,7 +48,7 @@ public class MacacoLider extends SuperDragao {
                 case 2:
                     setAllColors(BLACK);
                     antiGravMove();
-                    if ( hasTarget ) {
+                    if (hasTarget) {
                         doGun();
                         fire(firePower);
                     }
@@ -62,24 +56,23 @@ public class MacacoLider extends SuperDragao {
                 case 3:
                     setAllColors(WHITE);
                     antiGravMove();
-                    if ( hasTarget ) {
+                    if (hasTarget) {
                         doGun();
                         fire(firePower * 2);
                     }
                     break;
                 case 4:
                     setAllColors(RED);
-                    if ( !"".equals(fdp) ) {
+                    if (!"".equals(fdp)) 
                         target = inimigos.get(fdp);
-                        goTo(target.x, target.y);
-                        doGun();
-                        fire(firePower);
-                    }
+                    goTo(target.x, target.y);
+                    doGun();
+                    fire(firePower);
                     break;
                 case 5:
                     setAllColors(YELLOW);
                     goToEmptiestCorner();
-                    if ( hasTarget ) {
+                    if (hasTarget) {
                         doGun();
                         fire(firePower);
                     }
@@ -87,7 +80,6 @@ public class MacacoLider extends SuperDragao {
             }
             execute();
         }
-
     }
 
     public void report() {
@@ -97,23 +89,18 @@ public class MacacoLider extends SuperDragao {
         } catch (IOException ex) {
             Logger.getLogger(MacacoLider.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     public void checkdominance() {
-
         dominance = inimigos.size() <= teammates.size();
-
     }
 
     public void checkpleasure() {
-
         pleasure = btaken <= bhit;
-
     }
 
     public void checkarousal() {
-        arousal = getEnergy() > (vidaInicial / 2) ;
+        arousal = getEnergy() > (vidaInicial / 2);
     }
 
     public void setemotion() {
@@ -134,22 +121,24 @@ public class MacacoLider extends SuperDragao {
                 }
             }
         }
-
     }
 
     @Override
     public void onHitByBullet(HitByBulletEvent e) {
         btaken++;
-        inimigos.get(e.getName()).bhit();
-        int x = inimigos.get(e.getName()).getBhit();
-        if (x > topbtaken) {
-            topbtaken = x;
-            fdp = e.getName();
+        if (inimigos.containsKey(e.getName())) {
+            inimigos.get(e.getName()).bhit++;
+            int x = inimigos.get(e.getName()).getBhit();
+            if (x > topbtaken) {
+                topbtaken = x;
+                fdp = e.getName();
+            }
         }
     }
 
     public void onBulletHit(BulletHitEvent e) {
-        bhit++;
+        if (inimigos.containsKey(e.getName()))
+            bhit++;
     }
 
     public void onRobotDeath(RobotDeathEvent e) {
@@ -160,48 +149,38 @@ public class MacacoLider extends SuperDragao {
             inimigos.remove(e.getName());
         }
     }
-    
+
     public void onScannedRobot(ScannedRobotEvent e) {
+        
         if (isTeammate(e.getName())) {
-                double absbearing_rad = (getHeadingRadians()+e.getBearingRadians())%(2*PI);
-                Point2D pos = new Point2D.Double(); 
-                pos.setLocation( getX()+Math.sin(absbearing_rad)*e.getDistance(),  getY()+Math.cos(absbearing_rad)*e.getDistance());
-                teammates.put(e.getName(), pos);
+            double absbearing_rad = (getHeadingRadians() + e.getBearingRadians()) % (2 * PI);
+            Point2D pos = new Point2D.Double();
+            pos.setLocation(getX() + Math.sin(absbearing_rad) * e.getDistance(), getY() + Math.cos(absbearing_rad) * e.getDistance());
+            teammates.put(e.getName(), pos);
         } else {
             Inimigo en;
             if (inimigos.containsKey(e.getName())) {
-                en = (Inimigo)inimigos.get(e.getName());
+                en = (Inimigo) inimigos.get(e.getName());
             } else {
                 en = new Inimigo();
-                inimigos.put(e.getName(),en);
             }
             //the next line gets the absolute bearing to the point where the bot is
-            double absbearing_rad = (getHeadingRadians()+e.getBearingRadians())%(2*PI);
+            double absbearing_rad = (getHeadingRadians() + e.getBearingRadians()) % (2 * PI);
             //this section sets all the information about our target
             en.name = e.getName();
             double h = normaliseBearing(e.getHeadingRadians() - en.heading);
-            h = h/(getTime() - en.ctime);
+            h = h / (getTime() - en.ctime);
             en.changehead = h;
-            en.x = getX()+Math.sin(absbearing_rad)*e.getDistance(); //works out the x coordinate of where the target is
-            en.y = getY()+Math.cos(absbearing_rad)*e.getDistance(); //works out the y coordinate of where the target is
+            en.x = getX() + Math.sin(absbearing_rad) * e.getDistance(); //works out the x coordinate of where the target is
+            en.y = getY() + Math.cos(absbearing_rad) * e.getDistance(); //works out the y coordinate of where the target is
             en.bearing = e.getBearingRadians();
             en.heading = e.getHeadingRadians();
             en.ctime = getTime();				//game time at which this scan was produced
             en.speed = e.getVelocity();
-            en.distance = e.getDistance();	
+            en.distance = e.getDistance();
             en.live = true;
+            inimigos.put(e.getName(), en);
         }
-	}
-
-    public Point2D getCoordinates(ScannedRobotEvent e) {
-        double angleToTarget = e.getBearing();
-        // Calculate the angle to the scanned robot
-        double angle = Math.toRadians((getHeading() + angleToTarget % 360));
-        // Calculate the coordinates of the robot
-        double targetX = (getX() + Math.sin(angle) * e.getDistance());
-        double targetY = (getY() + Math.cos(angle) * e.getDistance());
-
-        return new Point2D.Double(targetX, targetY);
     }
 
     public void goToEmptiestCorner() {
@@ -215,10 +194,8 @@ public class MacacoLider extends SuperDragao {
         corners.add(new Point2D.Double(getBattleFieldHeight() - bufferDistance, bufferDistance));
         corners.add(new Point2D.Double(bufferDistance, (getBattleFieldWidth()) - bufferDistance));
         corners.add(new Point2D.Double((getBattleFieldHeight() - bufferDistance), (getBattleFieldWidth()) - bufferDistance));
-
-        Inimigo inimigo;
-        for (String key : inimigos.keySet()) {
-            inimigo = inimigos.get(key);
+        
+        for (Inimigo inimigo : inimigos.values()) {
             if (inimigo.getX() < getBattleFieldHeight() / 2) {
                 if (inimigo.getY() < getBattleFieldWidth() / 2) {
                     quadrant.add(0, quadrant.get(0) + 1);
@@ -237,8 +214,8 @@ public class MacacoLider extends SuperDragao {
             goTo(corners.get(i).getX(), corners.get(i).getY());
         }
     }
-    
-     void doScanner() {
+
+    void doScanner() {
         setTurnRadarLeftRadians(2 * PI);
     }
 }

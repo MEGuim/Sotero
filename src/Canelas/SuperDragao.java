@@ -5,25 +5,20 @@ import java.awt.geom.*;
 import java.util.*;
 
 /**
- * AntiGravityBot - A robot by Alisdair Owens Conventions in this bot include:
- * Use of radians throughout Storing absolute positions of enemy bots rather
- * than relative ones Very little code in events These are all good programming
- * practices for robocode There may also be methods that arent used; these might
- * just be useful for you.
+ *
+ * @author CFCanelas
  */
 public class SuperDragao extends TeamRobot {
 
-    /**
-     * run: SnippetBot's default behavior
-     */
     Inimigo target;					//our current enemy
     public Map<String, Inimigo> inimigos = new HashMap<String, Inimigo>();
+    boolean hasTarget = false;
+
     double firePower;				//the power of the shot we will be using
     final double PI = Math.PI;		//just a constant
     int direction = 1;				//direction we are heading... 1 = forward, -1 = backwards
     double midpointstrength = 0;	//The strength of the gravity point in the middle of the field
     int midpointcount = 0;			//Number of turns since that strength was changed
-    boolean hasTarget = false;
 
     void antiGravMove() {
         double xforce = 0;
@@ -31,7 +26,8 @@ public class SuperDragao extends TeamRobot {
         double force;
         double ang;
         GravPoint p;
-        for (Inimigo inimigo: inimigos.values()) {
+        
+        for (Inimigo inimigo : inimigos.values()) {
             if (inimigo.live) {
                 p = new GravPoint(inimigo.x, inimigo.y, -1000);
                 force = p.power / Math.pow(getRange(getX(), getY(), p.x, p.y), 2);
@@ -43,11 +39,6 @@ public class SuperDragao extends TeamRobot {
             }
         }
 
-        /**
-         * The next section adds a middle point with a random (positive or
-         * negative) strength. The strength changes every 5 turns, and goes
-         * between -1000 and 1000. This gives a better overall movement.*
-         */
         midpointcount++;
         if (midpointcount > 5) {
             midpointcount = 0;
@@ -59,11 +50,6 @@ public class SuperDragao extends TeamRobot {
         xforce += Math.sin(ang) * force;
         yforce += Math.cos(ang) * force;
 
-        /**
-         * The following four lines add wall avoidance. They will only affect us
-         * if the bot is close to the walls due to the force from the walls
-         * decreasing at a power 3.*
-         */
         xforce += 5000 / Math.pow(getRange(getX(), getY(), getBattleFieldWidth(), getY()), 3);
         xforce -= 5000 / Math.pow(getRange(getX(), getY(), 0, getY()), 3);
         yforce += 5000 / Math.pow(getRange(getX(), getY(), getX(), getBattleFieldHeight()), 3);
@@ -72,35 +58,26 @@ public class SuperDragao extends TeamRobot {
         //Move in the direction of our resolved force.
         goTo(getX() - xforce, getY() - yforce);
     }
-    
+
     void antiGravMoveNoEnemies() {
         double xforce = 0;
         double yforce = 0;
         double force;
         double ang;
         GravPoint p;
-        
-        /**
-         * The next section adds a middle point with a random (positive or
-         * negative) strength. The strength changes every 5 turns, and goes
-         * between -1000 and 1000. This gives a better overall movement.*
-         */
+
         midpointcount++;
         if (midpointcount > 5) {
             midpointcount = 0;
             midpointstrength = (Math.random() * 2000) - 1000;
         }
+
         p = new GravPoint(getBattleFieldWidth() / 2, getBattleFieldHeight() / 2, midpointstrength);
         force = p.power / Math.pow(getRange(getX(), getY(), p.x, p.y), 1.5);
         ang = normaliseBearing(Math.PI / 2 - Math.atan2(getY() - p.y, getX() - p.x));
         xforce += Math.sin(ang) * force;
         yforce += Math.cos(ang) * force;
 
-        /**
-         * The following four lines add wall avoidance. They will only affect us
-         * if the bot is close to the walls due to the force from the walls
-         * decreasing at a power 3.*
-         */
         xforce += 5000 / Math.pow(getRange(getX(), getY(), getBattleFieldWidth(), getY()), 3);
         xforce -= 5000 / Math.pow(getRange(getX(), getY(), 0, getY()), 3);
         yforce += 5000 / Math.pow(getRange(getX(), getY(), getX(), getBattleFieldHeight()), 3);
@@ -109,7 +86,6 @@ public class SuperDragao extends TeamRobot {
         //Move in the direction of our resolved force.
         goTo(getX() - xforce, getY() - yforce);
     }
-    
 
     /**
      * Move towards an x and y coordinate*
@@ -119,16 +95,6 @@ public class SuperDragao extends TeamRobot {
         double angle = Math.toDegrees(absbearing(getX(), getY(), x, y));
         double r = turnTo(angle);
         setAhead(dist * r);
-    }
-    
-    public void onHitRobot(HitRobotEvent event){
-        back(50);
-        ahead(100);
-    }
-    
-    public void onHitWall(HitWallEvent event){
-        turnRight(180);
-        ahead(5);
     }
 
     /**
@@ -151,8 +117,6 @@ public class SuperDragao extends TeamRobot {
         setTurnLeft(ang);
         return dir;
     }
-
-    
 
     //if a bearing is not within the -pi to pi range, alters it to provide the shortest angle
     double normaliseBearing(double ang) {
@@ -202,29 +166,29 @@ public class SuperDragao extends TeamRobot {
             return 2.0 * Math.PI - Math.asin(-xo / h);
         }
         return 0;
-    }    
-    
+    }
+
     void doGun() {
-		firePower = 400 / target.distance; //selects a bullet power based on our distance away from the target
-		if (firePower > 3) {
-			firePower = 3;
-		}
-	
-		long time = getTime() + (int)Math.round((getRange(getX(),getY(),target.x,target.y)/(20-(3*firePower))));
-		Point2D.Double p = target.guessPosition(time);
-		
-		//offsets the gun by the angle to the next shot based on linear targeting provided by the enemy class
-		double gunOffset = getGunHeadingRadians() - (Math.PI/2 - Math.atan2(p.y - getY(), p.x - getX()));
-		setTurnGunLeftRadians(normaliseBearing(gunOffset));
-	}
-    
+        firePower = 400 / target.distance; //selects a bullet power based on our distance away from the target
+        if (firePower > 3) {
+            firePower = 3;
+        }
+
+        long time = getTime() + (int) Math.round((getRange(getX(), getY(), target.x, target.y) / (20 - (3 * firePower))));
+        Point2D.Double p = target.guessPosition(time);
+
+        //offsets the gun by the angle to the next shot based on linear targeting provided by the enemy class
+        double gunOffset = getGunHeadingRadians() - (Math.PI / 2 - Math.atan2(p.y - getY(), p.x - getX()));
+        setTurnGunLeftRadians(normaliseBearing(gunOffset));
+    }
+
     public void selectTarget() {
         double distance = 999999999;
         double currY = getY();
         double currX = getX();
         for (Inimigo inimigo : inimigos.values()) {
             double aux = getRange(currX, currY, inimigo.x, inimigo.y);
-            if (aux < distance)  {
+            if (aux < distance) {
                 System.out.println(inimigo);
                 distance = aux;
                 target = inimigo;
@@ -233,5 +197,27 @@ public class SuperDragao extends TeamRobot {
             }
         }
     }
-}
 
+    public void onHitRobot(HitRobotEvent event) {
+        if (inimigos.containsKey(event.getName())) {
+            back(50);
+            ahead(100);
+        } else {
+            back(50);
+            turnRight(90);
+            ahead(100);
+        }
+    }
+
+    public void onHitWall(HitWallEvent event) {
+        double angle = Math.toDegrees(absbearing(getX(), getY(), getBattleFieldHeight(), getBattleFieldWidth()));
+        turnTo(angle);
+        ahead(5);
+    }
+    
+    public void onRobotDeath(RobotDeathEvent e) {
+        if (!isTeammate(e.getName())) {
+            inimigos.remove(e.getName());
+        }
+    }
+}

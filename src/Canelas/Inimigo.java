@@ -1,14 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Canelas;
 
 import java.awt.geom.Point2D;
 import java.io.Serializable;
 
-
+/**
+ *
+ * @author CFCanelas
+ */
 public class Inimigo implements Serializable {
 
     public Inimigo() {
@@ -20,6 +18,7 @@ public class Inimigo implements Serializable {
         this.x = x;
         this.y = y;
         this.speed = speed;
+        this.bhit = 0;
     }
 
     String name;
@@ -27,12 +26,11 @@ public class Inimigo implements Serializable {
     public long ctime; 		//game time that the scan was produced
     public boolean live; 	//is the enemy alive?
     public int bhit;
-    
-    
+
     public String getName() {
         return name;
     }
-    
+
     public int getBhit() {
         return bhit;
     }
@@ -120,9 +118,9 @@ public class Inimigo implements Serializable {
     public void setLive(boolean live) {
         this.live = live;
     }
-    
+
     public String toString() {
         return name;
     }
-    
+
 }
